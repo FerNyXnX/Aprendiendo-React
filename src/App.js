@@ -1,23 +1,37 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react';
+import FraseActual from './components/FraseActual';
+import AgregarFrase from './components/AgregarFrase';
+import ContadorFrases from './components/ContadorFrase';
+import Bienvenida from './components/Bienvenida';
+
+const frasesIniciales = [
+  "Sigue adelante, no te detengas.",
+  "Cada día es una nueva oportunidad.",
+  "El éxito es la suma de pequeños esfuerzos.",
+  "Cree en ti mismo."
+];
 
 function App() {
+  const [frases, setFrases] = useState(frasesIniciales);
+  const [indiceActual, setIndiceActual] = useState(0);
+
+  useEffect(() => {
+    const intervalo = setInterval(() => {
+      setIndiceActual(prev => (prev + 1) % frases.length);
+    }, 5000);
+    return () => clearInterval(intervalo);
+  }, [frases.length]);
+
+  const agregarFrase = (nuevaFrase) => {
+    setFrases([...frases, nuevaFrase]);
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
+    <div className="app">
+      <Bienvenida />
+      <FraseActual frase={frases[indiceActual]} />
+      <AgregarFrase onAgregar={agregarFrase} />
+      <ContadorFrases total={frases.length} />
     </div>
   );
 }
